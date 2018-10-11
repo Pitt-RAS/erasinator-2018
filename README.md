@@ -9,3 +9,6 @@ installer installs not only the loader for the Arduino IDE but also libraries
 and platform definitions for the IDE
 
 Other dependencies for the project can be found in the libraries folder. 
+To setup the libraries for your environment, either install the libaries via
+the Arduino Library Manager or copy the dependencies into your libraries 
+folder as appropriate for your enviroment/platformÇ
