@@ -9,7 +9,7 @@ EdgeDetector::EdgeDetector(){
 }
 void EdgeDetector::update(){
 	qtra.read(IR_values);
-	if(IR_values[0]>650 || IR_values[0]>650 || digitalRead(right_bumper_pin)==LOW || digitalRead(left_bumper_pin)==LOW){
+	if(IR_values[0]>650 || IR_values[1]>650 || digitalRead(right_bumper_pin)==LOW || digitalRead(left_bumper_pin)==LOW){
 //  if(digitalRead(right_bumper_pin)==LOW || digitalRead(left_bumper_pin)==LOW){
 		edge_detected=true;
 	}
