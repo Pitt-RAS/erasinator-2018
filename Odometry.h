@@ -6,17 +6,23 @@
 #define ODOMETRY_H_
 
 #include <Encoder.h>
+#include "Buffer.h"
+
+#define RADS_DEGREE 180/M_PI;
 
 class Odometry {
 public:
     Odometry();
     double getHeading();
+    double getHeadingDegrees();
     double getDistanceTraveled();
     double getVelocity();
     void update();
 private:
     Encoder encoder_a_;
     Encoder encoder_b_;
+    Buffer velocity_buffer_;
+    Buffer heading_buffer_;
     void calculateDistanceTotal();
     void calculateVelocityInstantaneous(long delta_time, long delta_a, long delta_b);
     void calculateHeadingInstantaneous(long new_count_a, long new_count_b);

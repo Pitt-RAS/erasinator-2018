@@ -33,6 +33,7 @@ void Odometry::update() {
     long current_time = millis();
     long delta_time = current_time - previous_time;
     calculateVelocityInstantaneous(delta_time, diff_count_a, diff_count_b);
+    calculateHeadingInstantaneous(diff_count_a, diff_count_b);
     if (new_motor_count_a != last_motor_count_a || new_motor_count_b != last_motor_count_b ) {
         last_motor_count_a = new_motor_count_a;
         last_motor_count_b = new_motor_count_b;
@@ -46,7 +47,15 @@ double Odometry::getDistanceTraveled() {
 }
 
 double Odometry::getVelocity() {
-    return current_velocity;
+    return velocity_buffer_.average();
+}
+
+double Odometry::getHeading() {
+    return heading_buffer_.average();
+}
+
+double Odometry::getHeadingDegrees() {
+    return heading_buffer_.average() * RADS_DEGREE;
 }
 
 void Odometry::calculateDistanceTotal() {
@@ -59,10 +68,11 @@ void Odometry::calculateDistanceTotal() {
 }
 
 void Odometry::calculateVelocityInstantaneous(long delta_time, long delta_a, long delta_b) {
-    angular_velocity_a = delta_a/delta_time;
-    angular_velocity_b = delta_b/delta_time;
+    angular_velocity_a = ((double) delta_a)/delta_time;
+    angular_velocity_b = ((double) delta_b)/delta_time;
     double avg_angular_velocity = (angular_velocity_a + angular_velocity_b)/2;
     current_velocity = avg_angular_velocity * WHEEL_RADIUS;
+    velocity_buffer_.push(current_velocity);
 }
 
 void Odometry::calculateHeadingInstantaneous(long delta_a, long delta_b) {
@@ -72,4 +82,5 @@ void Odometry::calculateHeadingInstantaneous(long delta_a, long delta_b) {
     double delta_distance_a = revolutions_a * WHEEL_CIRCUMFERENCE;
     double delta_distance_b = revolutions_b * WHEEL_CIRCUMFERENCE;
     theta = (delta_distance_a + delta_distance_b)/WHEEL_TRACK;
+    heading_buffer_.push(theta);
 }
