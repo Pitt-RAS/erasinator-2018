@@ -2,7 +2,6 @@
 
 Buffer::Buffer() {
     head = tail = 0;
-    buffer[BUFFER_SIZE] = {0};
 }
 
 // Adds value to buffer, returns index where value is inserted
