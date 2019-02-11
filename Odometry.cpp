@@ -8,7 +8,7 @@ const int Odometry::GEAR_RATIO = 63;
 const int Odometry::ENCODER_RESOLUTION = 20;
 const double Odometry::WHEEL_RADIUS = 29.83;
 const double Odometry::WHEEL_CIRCUMFERENCE = 187.301;
-const double Odometry::WHEEL_TRACK = 192.0;
+const double Odometry::WHEEL_TRACK = 190.275;
 const int Odometry::COUNTS_PER_REVOLUTION = GEAR_RATIO * ENCODER_RESOLUTION;
 
 Odometry::Odometry() :
@@ -19,8 +19,8 @@ Odometry::Odometry() :
     previous_time = 0;
     angular_velocity_a = 0;
     angular_velocity_b = 0;
-    last_motor_count_a = -1;
-    last_motor_count_b = -1;
+    last_motor_count_a = 0;
+    last_motor_count_b = 0;
     
 }
 
@@ -65,8 +65,8 @@ double Odometry::getHeadingDegrees() {
 
 void Odometry::calculateDistanceTotal() {
      // Converting raw counts into revolutions
-    double total_revolutions_a = last_motor_count_a / (double) COUNTS_PER_REVOLUTION;
-    double total_revolutions_b = last_motor_count_b / (double) COUNTS_PER_REVOLUTION;
+    double total_revolutions_a = ((double) last_motor_count_a)/ (double) COUNTS_PER_REVOLUTION;
+    double total_revolutions_b = ((double) last_motor_count_b)/ (double) COUNTS_PER_REVOLUTION;
     double distance_a = total_revolutions_a * WHEEL_CIRCUMFERENCE;
     double distance_b = total_revolutions_b * WHEEL_CIRCUMFERENCE;
     distance = (distance_a + distance_b) / 2;
