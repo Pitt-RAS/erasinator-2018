@@ -9,7 +9,7 @@ long current_time = 0;
 long previous_time_heart = -999;
 long previous_time_update = -999;
 uint8_t led_output = LOW;
-
+double wheel_velocities[2];
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600); 
@@ -31,10 +31,12 @@ void loop() {
       led_output = LOW;
       digitalWrite(13, led_output);
     }
-    Serial.printf("Total Distance: %.2f\tCurrent Heading: %.2f\t Current Velocity: %0.2f\n\r", 
+    Serial.printf("Total Distance: %.2f\tHeading: %.2f\tVelocity: %0.2f\tA: %0.2f\t B: %0.2f\n\r", 
       odometry.getDistanceTraveled(), 
       odometry.getHeadingDegrees(),
-      odometry.getVelocity()); 
+      odometry.getVelocity(wheel_velocities),
+      wheel_velocities[0],
+      wheel_velocities[1]);
     previous_time_heart = current_time;
   }
   current_time = millis();

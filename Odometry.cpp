@@ -19,9 +19,8 @@ Odometry::Odometry() :
     previous_time = 0;
     angular_velocity_a = 0;
     angular_velocity_b = 0;
-    current_velocity = 0;
-    last_motor_count_a = -999;
-    last_motor_count_b = -999;
+    last_motor_count_a = -1;
+    last_motor_count_b = -1;
     
 }
 
@@ -46,16 +45,22 @@ double Odometry::getDistanceTraveled() {
     return distance;
 }
 
-double Odometry::getVelocity() {
-    return velocity_buffer_.average();
+double Odometry::getVelocity(double* wheel_velocities) {
+    double average_a = velocity_buffer_a_.average();
+    double average_b = velocity_buffer_b_.average();
+    if (wheel_velocities) {
+        wheel_velocities[0] = average_a;
+        wheel_velocities[1] = average_b;
+    }
+    return (average_a + average_b)/2;
 }
 
 double Odometry::getHeading() {
-    return heading_buffer_.average();
+    return theta;
 }
 
 double Odometry::getHeadingDegrees() {
-    return heading_buffer_.average() * RADS_DEGREE;
+    return theta * RADS_DEGREE;
 }
 
 void Odometry::calculateDistanceTotal() {
@@ -70,17 +75,17 @@ void Odometry::calculateDistanceTotal() {
 void Odometry::calculateVelocityInstantaneous(long delta_time, long delta_a, long delta_b) {
     angular_velocity_a = ((double) delta_a)/delta_time;
     angular_velocity_b = ((double) delta_b)/delta_time;
-    double avg_angular_velocity = (angular_velocity_a + angular_velocity_b)/2;
-    current_velocity = avg_angular_velocity * WHEEL_RADIUS;
-    velocity_buffer_.push(current_velocity);
+    double current_velocity_a = angular_velocity_a * WHEEL_RADIUS;
+    double current_velocity_b = angular_velocity_b * WHEEL_RADIUS;
+    velocity_buffer_a_.push(current_velocity_a);
+    velocity_buffer_b_.push(current_velocity_b);
 }
 
 void Odometry::calculateHeadingInstantaneous(long delta_a, long delta_b) {
     // Converting raw counts into revolutions
-    double revolutions_a = delta_a/COUNTS_PER_REVOLUTION;
-    double revolutions_b = delta_b/COUNTS_PER_REVOLUTION;
+    double revolutions_a = ((double) delta_a)/(double) COUNTS_PER_REVOLUTION;
+    double revolutions_b = ((double) delta_b)/(double) COUNTS_PER_REVOLUTION;
     double delta_distance_a = revolutions_a * WHEEL_CIRCUMFERENCE;
     double delta_distance_b = revolutions_b * WHEEL_CIRCUMFERENCE;
-    theta = (delta_distance_a + delta_distance_b)/WHEEL_TRACK;
-    heading_buffer_.push(theta);
+    theta += (delta_distance_b - delta_distance_a)/WHEEL_TRACK;
 }
