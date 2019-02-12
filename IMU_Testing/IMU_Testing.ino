@@ -3,8 +3,12 @@
 
 IMU_Testing testing;
 
-void setup() {}
+void setup() {
+  testing.setupGyro();
+  //testing.setupOrient();
+}
 
 void loop() {
-  testing.checkOrient();
+  testing.checkGyro();
+  //testing.checkOrient();
 }

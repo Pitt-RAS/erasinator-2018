@@ -6,7 +6,11 @@
 class IMU_Testing {
   public:
     IMU_Testing();
-    void printIMUData();
+    void setupOrient();
+    void setupGyro();
+    void printOrientData();
+    void printGyroData();
+    void checkGyro();
     void checkOrient();
 
   private: 

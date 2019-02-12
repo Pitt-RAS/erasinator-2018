@@ -11,8 +11,11 @@ unsigned long IMU_Testing::lastStepCount = 0;
 const signed char IMU_Testing::orientationMatrix[9]={1,0,0,0,1,0,0,0,1};
 unsigned char IMU_Testing::lastOrient = 0;
 
-//Initializes everything and gets the imu running
 IMU_Testing::IMU_Testing()
+{}
+
+//Initializes everything and gets the imu running for Orientation and Quatorion 
+void IMU_Testing::setupOrient()
 {
     SerialPort.begin(115200);
 
@@ -32,8 +35,33 @@ IMU_Testing::IMU_Testing()
     imu.dmpSetOrientation(orientationMatrix);
 }
 
+//Initializes everything and gets the imu running for Gyro
+void IMU_Testing::setupGyro()
+{
+  SerialPort.begin(115200);
+
+  // Call imu.begin() to verify communication and initialize
+  if (imu.begin() != INV_SUCCESS)
+  {
+    while (1)
+    {
+      SerialPort.println("Unable to communicate with MPU-9250");
+      SerialPort.println("Check connections, and try again.");
+      SerialPort.println();
+      delay(5000);
+    }
+  }
+
+  imu.setSensors(INV_XYZ_GYRO); // Enable gyroscope only
+  imu.setGyroFSR(2000); // Set gyro to 2000 dps
+
+  imu.dmpBegin(DMP_FEATURE_GYRO_CAL |   // Enable gyro cal
+              DMP_FEATURE_SEND_CAL_GYRO,// Send cal'd gyro values
+              10);                   // Set DMP rate to 10 Hz
+}
+
 //Prints the Roll, Pitch, and Yaw of the robot in relation to the sensor
-void IMU_Testing::printIMUData()
+void IMU_Testing::printOrientData()
 {  
   // After calling dmpUpdateFifo() the ax, gx, mx, etc. values
   // are all updated.
@@ -51,9 +79,39 @@ void IMU_Testing::printIMUData()
   SerialPort.println();
 }
 
+//Prints the x, y, and z axis of the robot in relation to the sensor
+void IMU_Testing::printGyroData()
+{
+  // After calling dmpUpdateFifo() the ax, gx, mx, etc. values
+  // are all updated.
+  float gyroX = imu.calcGyro(imu.gx);
+  float gyroY = imu.calcGyro(imu.gy);
+  float gyroZ = imu.calcGyro(imu.gz);
+  
+  SerialPort.println("Gyro: " + String(gyroX) + ", " +
+              String(gyroY) + ", " + String(gyroZ) + " dps");
+  SerialPort.println("Time: " + String(imu.time) + " ms");
+  SerialPort.println();
+}
+
+//Checks and updates the orientation of the robot according to the gyro
+void IMU_Testing::checkGyro()
+{
+  // Check for new data in the FIFO
+  if ( imu.fifoAvailable() )
+  {
+    // Use dmpUpdateFifo to update the ax, gx, mx, etc. values
+    if ( imu.dmpUpdateFifo() == INV_SUCCESS)
+    {
+      printGyroData();
+    }
+  }
+}
+
 /*Checks to see if the orientation was changed and prints out the change along with
 the data from printIMUData();*/
-void IMU_Testing::checkOrient(){
+void IMU_Testing::checkOrient()
+{
     if ( imu.fifoAvailable() ){
         imu.dmpUpdateFifo();
         unsigned char orient = imu.dmpGetOrientation();
@@ -62,26 +120,26 @@ void IMU_Testing::checkOrient(){
                 case ORIENT_PORTRAIT:
                     SerialPort.println("Going up");
                     imu.computeEulerAngles();
-                    printIMUData();
-                    //do something
+                    printOrientData();
+                      //do something
                     break;
                 case ORIENT_LANDSCAPE:
                     SerialPort.println("Going left");
                     imu.computeEulerAngles();
-                    printIMUData();
-                    //do something
+                    printOrientData();
+                      //do something
                     break;
                 case ORIENT_REVERSE_PORTRAIT:
                     SerialPort.println("Going down");
                     imu.computeEulerAngles();
-                    printIMUData();
-                    //do something
+                    printOrientData();
+                      //do something
                     break;
                 case ORIENT_REVERSE_LANDSCAPE:
                     SerialPort.println("Going right");
                     imu.computeEulerAngles();
-                    printIMUData();
-                    //do something
+                    printOrientData();
+                      //do something
                     break;
             }
             lastOrient = orient;
