@@ -22,7 +22,9 @@ Odometry::Odometry() :
     last_motor_count_a = 0;
     last_motor_count_b = 0;
 }
-
+/*
+ * Updates estimates for Odometry
+ */
 void Odometry::update() {
     long new_motor_count_a = encoder_a_.read();
     long new_motor_count_b = encoder_b_.read();
@@ -44,10 +46,23 @@ double Odometry::getDistanceTraveled() {
     return distance;
 }
 
+/* 
+ * Returns current estimate for the velocity of the robot from the wheels
+ */ 
+double Odometry::getVelocity() {
+    return Odometry::getVelocity(NULL);
+}
+
+/*
+ * Returns current estimate for velocity of the robot from the wheels
+ * Use this method if you need individual wheel estimates
+ * Velocity for Wheel A is in index 0 and Wheel B is in index 1
+ */
 double Odometry::getVelocity(double* wheel_velocities) {
     double average_a = velocity_buffer_a_.average();
     double average_b = velocity_buffer_b_.average();
     if (wheel_velocities) {
+        // put individual wheel velocity averages into array
         wheel_velocities[0] = average_a;
         wheel_velocities[1] = average_b;
     }
@@ -55,13 +70,17 @@ double Odometry::getVelocity(double* wheel_velocities) {
 }
 
 double Odometry::getHeading() {
-    return theta;
+    return theta; 
 }
 
 double Odometry::getHeadingDegrees() {
     return theta * RADS_DEGREE;
 }
 
+/*
+ * Calculates the distance traveled by each wheel
+ * Note currently at this point a reverse rotation of the wheels decreaases the wheel
+ */ 
 void Odometry::calculateDistanceTotal() {
      // Converting raw counts into revolutions
     double total_revolutions_a = (double) last_motor_count_a/ (double) COUNTS_PER_REVOLUTION;
@@ -70,9 +89,11 @@ void Odometry::calculateDistanceTotal() {
     double distance_b = total_revolutions_b * WHEEL_CIRCUMFERENCE;
     distance = (distance_a + distance_b) / 2;
 }
-
+/*
+ * Calculates the instananeous linear velocity for each wheel
+ */
 void Odometry::calculateVelocityInstantaneous(long delta_time, long delta_a, long delta_b) {
-    if (!delta_time) { return; }
+    if (!delta_time) { return; } // Prevents divide by zero error
     angular_velocity_a = (double) delta_a/(double) delta_time;
     angular_velocity_b = (double) delta_b/(double) delta_time;
     double current_velocity_a = angular_velocity_a * WHEEL_RADIUS;
@@ -81,8 +102,12 @@ void Odometry::calculateVelocityInstantaneous(long delta_time, long delta_a, lon
     velocity_buffer_b_.push(current_velocity_b);
 }
 
+/*
+ * Derives a heading in radians from distance traveled by each wheel
+ */
 void Odometry::calculateHeadingInstantaneous(long delta_a, long delta_b) {
     if (!delta_a && !delta_b) {
+        // Early return if there are no changes
         return;
     } 
     double revolutions_a = (double) delta_a/(double) COUNTS_PER_REVOLUTION;
