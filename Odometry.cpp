@@ -42,6 +42,9 @@ void Odometry::update() {
     previous_time = current_time;
 }
 
+/* 
+ * Returns distance traveled; Note: can be negative if robot travels in reverse
+ */
 double Odometry::getDistanceTraveled() {
     return distance;
 }
@@ -106,10 +109,7 @@ void Odometry::calculateVelocityInstantaneous(long delta_time, long delta_a, lon
  * Derives a heading in radians from distance traveled by each wheel
  */
 void Odometry::calculateHeadingInstantaneous(long delta_a, long delta_b) {
-    if (!delta_a && !delta_b) {
-        // Early return if there are no changes
-        return;
-    } 
+    if (!delta_a && !delta_b) { return; } // Early return if there are no changes
     double revolutions_a = (double) delta_a/(double) COUNTS_PER_REVOLUTION;
     double revolutions_b = (double) delta_b/(double) COUNTS_PER_REVOLUTION;
     double delta_distance_a = revolutions_a * WHEEL_CIRCUMFERENCE;
