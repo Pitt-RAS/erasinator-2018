@@ -16,6 +16,7 @@ public:
     double getHeading();
     double getHeadingDegrees();
     double getDistanceTraveled();
+    double getVelocity();
     double getVelocity(double* wheel_velocities);
     void update();
 private:
