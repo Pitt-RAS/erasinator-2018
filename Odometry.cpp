@@ -6,8 +6,8 @@ const uint8_t Odometry::ENCODE_B_1 = 7;
 const uint8_t Odometry::ENCODE_B_2 = 8;
 const int Odometry::GEAR_RATIO = 63;
 const int Odometry::ENCODER_RESOLUTION = 20;
-const double Odometry::WHEEL_RADIUS = 29.83;
-const double Odometry::WHEEL_CIRCUMFERENCE = 187.301;
+const double Odometry::WHEEL_RADIUS = 29.8;
+const double Odometry::WHEEL_CIRCUMFERENCE = WHEEL_RADIUS * 2 * M_PI;
 const double Odometry::WHEEL_TRACK = 190.275;
 const int Odometry::COUNTS_PER_REVOLUTION = GEAR_RATIO * ENCODER_RESOLUTION;
 
@@ -21,7 +21,6 @@ Odometry::Odometry() :
     angular_velocity_b = 0;
     last_motor_count_a = 0;
     last_motor_count_b = 0;
-    
 }
 
 void Odometry::update() {
@@ -65,16 +64,17 @@ double Odometry::getHeadingDegrees() {
 
 void Odometry::calculateDistanceTotal() {
      // Converting raw counts into revolutions
-    double total_revolutions_a = ((double) last_motor_count_a)/ (double) COUNTS_PER_REVOLUTION;
-    double total_revolutions_b = ((double) last_motor_count_b)/ (double) COUNTS_PER_REVOLUTION;
+    double total_revolutions_a = (double) last_motor_count_a/ (double) COUNTS_PER_REVOLUTION;
+    double total_revolutions_b = (double) last_motor_count_b/ (double) COUNTS_PER_REVOLUTION;
     double distance_a = total_revolutions_a * WHEEL_CIRCUMFERENCE;
     double distance_b = total_revolutions_b * WHEEL_CIRCUMFERENCE;
     distance = (distance_a + distance_b) / 2;
 }
 
 void Odometry::calculateVelocityInstantaneous(long delta_time, long delta_a, long delta_b) {
-    angular_velocity_a = ((double) delta_a)/delta_time;
-    angular_velocity_b = ((double) delta_b)/delta_time;
+    if (!delta_time) { return; }
+    angular_velocity_a = (double) delta_a/(double) delta_time;
+    angular_velocity_b = (double) delta_b/(double) delta_time;
     double current_velocity_a = angular_velocity_a * WHEEL_RADIUS;
     double current_velocity_b = angular_velocity_b * WHEEL_RADIUS;
     velocity_buffer_a_.push(current_velocity_a);
@@ -82,9 +82,11 @@ void Odometry::calculateVelocityInstantaneous(long delta_time, long delta_a, lon
 }
 
 void Odometry::calculateHeadingInstantaneous(long delta_a, long delta_b) {
-    // Converting raw counts into revolutions
-    double revolutions_a = ((double) delta_a)/(double) COUNTS_PER_REVOLUTION;
-    double revolutions_b = ((double) delta_b)/(double) COUNTS_PER_REVOLUTION;
+    if (!delta_a && !delta_b) {
+        return;
+    } 
+    double revolutions_a = (double) delta_a/(double) COUNTS_PER_REVOLUTION;
+    double revolutions_b = (double) delta_b/(double) COUNTS_PER_REVOLUTION;
     double delta_distance_a = revolutions_a * WHEEL_CIRCUMFERENCE;
     double delta_distance_b = revolutions_b * WHEEL_CIRCUMFERENCE;
     theta += (delta_distance_b - delta_distance_a)/WHEEL_TRACK;
