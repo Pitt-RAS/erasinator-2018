@@ -6,13 +6,16 @@
 class IMU_Testing {
   public:
     IMU_Testing();
+<<<<<<< HEAD
+    void printIMUData();
+    void checkOrient();
+=======
     void setupOrient();
     void setupGyro();
     void setupAccel();
     void printOrientData();
     void printGyroData();
     void printAccelData();
-    void checkGyro();
     float getQX();
     float getQY();
     float getQZ();
@@ -23,7 +26,9 @@ class IMU_Testing {
     float getAccelY();
     float getAccelZ();
     void checkOrient();
+    void checkGyro();
     void checkAccel();
+>>>>>>> 5602601... Realized I made a minor error in the getters
 
   private: 
     static unsigned long stepCount;
