@@ -1,9 +1,7 @@
 #include "IMU.h"
 
-IMU testing;
+IMU data;
 
 void setup() {}
 
-void loop() {
-  
-}
+void loop() {}
