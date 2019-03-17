@@ -11,16 +11,12 @@ unsigned long IMU_Testing::lastStepCount = 0;
 const signed char IMU_Testing::orientationMatrix[9]={1,0,0,0,1,0,0,0,1};
 unsigned char IMU_Testing::lastOrient = 0;
 
-<<<<<<< HEAD
-//Initializes everything and gets the imu running
-IMU_Testing::IMU_Testing()
-=======
+
 IMU_Testing::IMU_Testing()
 {}
 
 //Initializes everything and gets the imu running for Orientation and Quatorion 
 void IMU_Testing::setupOrient()
->>>>>>> 5602601... Realized I made a minor error in the getters
 {
     SerialPort.begin(115200);
 
@@ -40,10 +36,6 @@ void IMU_Testing::setupOrient()
     imu.dmpSetOrientation(orientationMatrix);
 }
 
-<<<<<<< HEAD
-//Prints the Roll, Pitch, and Yaw of the robot in relation to the sensor
-void IMU_Testing::printIMUData()
-=======
 //Initializes everything and gets the imu running for Gyro
 void IMU_Testing::setupGyro()
 {
@@ -92,7 +84,6 @@ void IMU_Testing::setupAccel()
 
 //Prints the Roll, Pitch, and Yaw of the robot in relation to the sensor
 void IMU_Testing::printOrientData()
->>>>>>> 5602601... Realized I made a minor error in the getters
 {  
   // After calling dmpUpdateFifo() the ax, gx, mx, etc. values
   // are all updated.
@@ -110,11 +101,6 @@ void IMU_Testing::printOrientData()
   SerialPort.println();
 }
 
-<<<<<<< HEAD
-/*Checks to see if the orientation was changed and prints out the change along with
-the data from printIMUData();*/
-void IMU_Testing::checkOrient(){
-=======
 //Prints the x, y, and z axis of the robot in relation to the sensor
 void IMU_Testing::printGyroData()
 {
@@ -210,7 +196,6 @@ float IMU_Testing::getAccelZ()
 the data from printIMUData();*/
 void IMU_Testing::checkOrient()
 {
->>>>>>> 5602601... Realized I made a minor error in the getters
     if ( imu.fifoAvailable() ){
         imu.dmpUpdateFifo();
         unsigned char orient = imu.dmpGetOrientation();
@@ -219,54 +204,32 @@ void IMU_Testing::checkOrient()
                 case ORIENT_PORTRAIT:
                     SerialPort.println("Going up");
                     imu.computeEulerAngles();
-<<<<<<< HEAD
-                    printIMUData();
-                    //do something
-=======
                     printOrientData();
                       //do something
->>>>>>> 5602601... Realized I made a minor error in the getters
                     break;
                 case ORIENT_LANDSCAPE:
                     SerialPort.println("Going left");
                     imu.computeEulerAngles();
-<<<<<<< HEAD
-                    printIMUData();
-                    //do something
-=======
                     printOrientData();
                       //do something
->>>>>>> 5602601... Realized I made a minor error in the getters
                     break;
                 case ORIENT_REVERSE_PORTRAIT:
                     SerialPort.println("Going down");
                     imu.computeEulerAngles();
-<<<<<<< HEAD
-                    printIMUData();
-                    //do something
-=======
                     printOrientData();
                       //do something
->>>>>>> 5602601... Realized I made a minor error in the getters
                     break;
                 case ORIENT_REVERSE_LANDSCAPE:
                     SerialPort.println("Going right");
                     imu.computeEulerAngles();
-<<<<<<< HEAD
-                    printIMUData();
-                    //do something
-=======
                     printOrientData();
                       //do something
->>>>>>> 5602601... Realized I made a minor error in the getters
                     break;
             }
             lastOrient = orient;
         }
     }
 }
-<<<<<<< HEAD
-=======
 
 //Checks and updates the orientation of the robot according to the gyro
 void IMU_Testing::checkGyro()
@@ -291,4 +254,3 @@ void IMU_Testing::checkAccel()
     }
   }
 }
->>>>>>> 5602601... Realized I made a minor error in the getters
