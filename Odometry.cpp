@@ -4,12 +4,12 @@ const uint8_t Odometry::ENCODE_A_1 = 5;
 const uint8_t Odometry::ENCODE_A_2 = 6;
 const uint8_t Odometry::ENCODE_B_1 = 7;
 const uint8_t Odometry::ENCODE_B_2 = 8;
-const int Odometry::GEAR_RATIO = 63;
+const double Odometry::GEAR_RATIO = 62.5;
 const int Odometry::ENCODER_RESOLUTION = 20;
-const double Odometry::WHEEL_RADIUS = 29.8;
+const double Odometry::WHEEL_RADIUS = 29.84;
 const double Odometry::WHEEL_CIRCUMFERENCE = WHEEL_RADIUS * 2 * M_PI;
 const double Odometry::WHEEL_TRACK = 190.275;
-const int Odometry::COUNTS_PER_REVOLUTION = GEAR_RATIO * ENCODER_RESOLUTION;
+const int Odometry::COUNTS_PER_REVOLUTION = (int) (GEAR_RATIO * (double) ENCODER_RESOLUTION);
 
 Odometry::Odometry() :
     encoder_a_(ENCODE_A_1, ENCODE_A_2),
