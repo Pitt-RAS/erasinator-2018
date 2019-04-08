@@ -16,6 +16,7 @@ public:
     double getHeading();
     double getHeadingDegrees();
     double getDistanceTraveled();
+    double getVelocity();
     double getVelocity(double* wheel_velocities);
     void update();
 private:
@@ -38,7 +39,7 @@ private:
     static const uint8_t ENCODE_A_2;
     static const uint8_t ENCODE_B_1;
     static const uint8_t ENCODE_B_2;
-    static const int GEAR_RATIO;
+    static const double GEAR_RATIO;
     static const int ENCODER_RESOLUTION;
     static const double WHEEL_RADIUS;
     static const double WHEEL_CIRCUMFERENCE; // in millimeters
