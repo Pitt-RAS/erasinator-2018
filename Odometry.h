@@ -18,6 +18,7 @@ public:
     double getDistanceTraveled();
     double getVelocity();
     double getVelocity(double* wheel_velocities);
+    void zeroDistance();
     void update();
 private:
     Encoder encoder_a_;

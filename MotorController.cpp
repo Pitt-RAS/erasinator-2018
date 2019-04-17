@@ -2,10 +2,10 @@
 
 const uint8_t MotorController::PWMA = A7;
 const uint8_t MotorController::PWMB = A6;
-const uint8_t MotorController::AIN1 = A8;
-const uint8_t MotorController::AIN2 = A9;
-const uint8_t MotorController::BIN1 = 11;
-const uint8_t MotorController::BIN2 = 12;
+const uint8_t MotorController::AIN1 = 23;
+const uint8_t MotorController::AIN2 = 22;
+const uint8_t MotorController::BIN1 = 12;
+const uint8_t MotorController::BIN2 = 11;
 const uint8_t MotorController::STBY = 13;
 
 MotorController::MotorController(){

@@ -1,9 +1,9 @@
 #include "Odometry.h"
 
-const uint8_t Odometry::ENCODE_A_1 = 5;
-const uint8_t Odometry::ENCODE_A_2 = 6;
+const uint8_t Odometry::ENCODE_A_1 = 9;
+const uint8_t Odometry::ENCODE_A_2 = 8;
 const uint8_t Odometry::ENCODE_B_1 = 7;
-const uint8_t Odometry::ENCODE_B_2 = 8;
+const uint8_t Odometry::ENCODE_B_2 = 6;
 const double Odometry::GEAR_RATIO = 62.5;
 const int Odometry::ENCODER_RESOLUTION = 20;
 const double Odometry::WHEEL_RADIUS = 29.84;
@@ -115,4 +115,11 @@ void Odometry::calculateHeadingInstantaneous(long delta_a, long delta_b) {
     double delta_distance_a = revolutions_a * WHEEL_CIRCUMFERENCE;
     double delta_distance_b = revolutions_b * WHEEL_CIRCUMFERENCE;
     theta += (delta_distance_b - delta_distance_a)/WHEEL_TRACK;
+}
+void Odometry::zeroDistance(){
+    distance = 0;
+    encoder_a_.write(0);
+    encoder_b_.write(0);
+    last_motor_count_a=0;
+    last_motor_count_b=0;
 }
